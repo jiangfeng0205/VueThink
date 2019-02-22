@@ -71,6 +71,20 @@ VueThink是基于MIT协议的开源框架，它完全免费。你可以免费下
 
 附上接口文档：<http://api.vuethink.com>
 
+解决跨域：
+···
+vue配置代理：    
+proxyTable: {
+        '/apis': {
+            // 测试环境
+            target: 'http://localhost:9555', // 本地接口域名
+            changeOrigin: true, //是否跨域
+            pathRewrite: {
+                '^/apis': '' //需要rewrite重写的,
+            }
+        }
+    },
+···
 ## Server搭建
 服务端使用的框架为thinkphp5.搭建前请确保拥有lamp/lnmp/wamp环境。
 
