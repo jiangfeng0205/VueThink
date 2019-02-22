@@ -73,7 +73,7 @@ VueThink是基于MIT协议的开源框架，它完全免费。你可以免费下
 
 解决跨域：
 ```
-vue配置代理：    
+在index.js中vue配置代理：    
 proxyTable: {
         '/apis': {
             // 测试环境
@@ -84,6 +84,13 @@ proxyTable: {
             }
         }
     },
+    
+在main.js配置访问host
+将 axios.defaults.baseURL = HOST 改为
+axios.defaults.baseURL = '/apis/'
+
+将 window.HOST = HOST 改为
+window.HOST = '/apis/'
 ```
 ## Server搭建
 服务端使用的框架为thinkphp5.搭建前请确保拥有lamp/lnmp/wamp环境。
@@ -109,7 +116,43 @@ proxyTable: {
 请参考[ThinPHP重写](https://www.kancloud.cn/manual/thinkphp5_1/353955)
 ```
 
+## nginx配置实例
+```
+server {
+        # listen       80;
+         listen       9555;
+         server_name  127.0.0.1;
+        # server_name  www.vuethinklocal.com;
+        root    "E:/phpStudy/PHPTutorial/WWW/VueThink/php/public";
+        location / {
+            index  index.html index.htm index.php l.php;
+            if (!-e $request_filename) {
 
+                rewrite  ^(.*)$  /index.php?s=$1  last;
+
+                break;
+
+            }
+           autoindex  on;
+        }
+
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+
+        location ~ \.php(.*)$  {
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            fastcgi_split_path_info  ^((?U).+\.php)(/?.+)$;
+            fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+            fastcgi_param  PATH_INFO  $fastcgi_path_info;
+            fastcgi_param  PATH_TRANSLATED  $document_root$fastcgi_path_info;
+            include        fastcgi_params;
+        }
+
+    }
+```
 
 ### 前端搭建
 ```
